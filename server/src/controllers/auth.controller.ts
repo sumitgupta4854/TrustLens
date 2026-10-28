@@ -28,7 +28,7 @@ function setRefreshCookie(res: Response, token: string, expiresAt: Date) {
   res.cookie(COOKIE_NAME, token, {
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? 'strict' : 'lax',
+    sameSite: isProduction ? 'none' : 'lax',
     expires: expiresAt,
     path: '/api/auth',
   });
@@ -39,7 +39,7 @@ function clearRefreshCookie(res: Response) {
   res.clearCookie(COOKIE_NAME, {
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? 'strict' : 'lax',
+    sameSite: isProduction ? 'none' : 'lax',
     path: '/api/auth',
   });
 }
