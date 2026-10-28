@@ -1,0 +1,82 @@
+# TrustLens Render Configuration
+# Deploy this file to Render by connecting your GitHub repository
+# Or import this blueprint at https://render.com/blueprints
+
+version: 1
+
+# ===================================================
+# Backend Web Service (Express API)
+# ===================================================
+services:
+  - type: web
+    name: trustlens-backend
+    env: node
+    region: oregon  # Change to your preferred region (oregon, ohio, etc.)
+    plan: starter  # Free tier: starter, paid: standard, pro
+    
+    # Build and start commands
+    buildCommand: npm --prefix server run build
+    startCommand: npm --prefix server start
+    
+    # Auto-deploy on push
+    autoDeploy: true
+    
+    # Health check
+    healthCheckPath: /api/health
+    
+    # Environment variables
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8787
+      - key: MONGODB_URI
+        # Set this in Render dashboard with your MongoDB Atlas connection string
+        # Example: mongodb+srv://user:pass@cluster.mongodb.net/trustlens?retryWrites=true&w=majority
+      - key: JWT_ACCESS_SECRET
+        # Generate strong secret: openssl rand -base64 48
+      - key: JWT_REFRESH_SECRET
+        # Generate strong secret: openssl rand -base64 48
+      - key: JWT_ACCESS_EXPIRY
+        value: 15m
+      - key: JWT_REFRESH_EXPIRY_DAYS
+        value: 7
+      - key: APP_BASE_URL
+        # Will be set after frontend is deployed
+        value: https://trustlens-frontend.onrender.com
+      - key: API_BASE_URL
+        # Will be set after backend is deployed
+        value: https://trustlens-backend.onrender.com
+      - key: LLM_API_KEY
+        # Optional: Leave empty for rule-based fallback
+      - key: LLM_BASE_URL
+        value: https://api.openai.com/v1
+      - key: LLM_MODEL
+        value: gpt-4o-mini
+      - key: EMAIL_PROVIDER
+        value: console
+
+# ===================================================
+# Frontend Static Site (React + Vite)
+# ===================================================
+  - type: static
+    name: trustlens-frontend
+    buildCommand: npm --prefix client run build
+    publish: client/dist
+    route:
+      - type: rewrite
+        source: /api/*
+        destination: https://trustlens-backend.onrender.com/api/*
+    envVars:
+      - key: VITE_API_BASE_URL
+        # Backend API URL for Vite to use in production
+        value: https://trustlens-backend.onrender.com
+
+# ===================================================
+# Notes:
+# 1. After first deploy, update APP_BASE_URL and API_BASE_URL
+#    with the actual URLs Render assigns to your services
+# 2. Set MONGODB_URI, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET
+#    in the Render dashboard (never commit real secrets)
+# 3. MongoDB Atlas is NOT included - you need to create it separately
+# ===================================================
