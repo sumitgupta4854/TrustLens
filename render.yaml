@@ -14,9 +14,12 @@ services:
     region: oregon  # Change to your preferred region (oregon, ohio, etc.)
     plan: starter  # Free tier: starter, paid: standard, pro
     
+    # Root directory for the service (repo subfolder containing package.json)
+    rootDir: server
+    
     # Build and start commands
-    buildCommand: npm --prefix server run build
-    startCommand: npm --prefix server start
+    buildCommand: npm run build
+    startCommand: npm start
     
     # Auto-deploy on push
     autoDeploy: true
