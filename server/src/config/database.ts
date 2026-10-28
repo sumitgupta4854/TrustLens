@@ -6,13 +6,18 @@ let isConnected = false;
 
 function maskMongoUri(uri: string): string {
   try {
-    return uri.replace(/\/\/([^:]+):([^@]+)@/, '//***:***@');
+    return uri.replace(
+      /\/\/([^:/]+):([^@/]+)@/,
+      '//***:***@'
+    );
   } catch {
     return 'mongodb://[credentials_masked]';
   }
 }
 
-export async function connectDatabase(customUri?: string): Promise<typeof mongoose> {
+export async function connectDatabase(
+  customUri?: string
+): Promise<typeof mongoose> {
   const uri = customUri || env.MONGODB_URI;
 
   if (mongoose.connection.readyState === 1) {
@@ -21,8 +26,9 @@ export async function connectDatabase(customUri?: string): Promise<typeof mongoo
   }
 
   try {
-    const masked = maskMongoUri(uri);
-    logger.info(`Connecting to MongoDB Atlas at ${masked}...`);
+    logger.info(
+      `Connecting to MongoDB Atlas at ${maskMongoUri(uri)}...`
+    );
 
     await mongoose.connect(uri, {
       autoIndex: true,
@@ -30,9 +36,10 @@ export async function connectDatabase(customUri?: string): Promise<typeof mongoo
     });
 
     isConnected = true;
-    logger.info('✅ Successfully connected to MongoDB Atlas');
 
-    mongoose.connection.on('error', (err) => {
+    logger.info('Successfully connected to MongoDB Atlas');
+
+    mongoose.connection.on('error', (err: Error) => {
       logger.error('MongoDB Atlas runtime error:', err);
       isConnected = false;
     });
