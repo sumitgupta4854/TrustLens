@@ -1,0 +1,23 @@
+{
+  "name": "trustlens",
+  "version": "1.0.0",
+  "description": "TrustLens — AI-Powered Dating Safety Companion with Boundary Tracking and Pattern Intelligence",
+  "private": true,
+  "scripts": {
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "dev": "concurrently -n \"server,client\" -c \"blue,magenta\" \"npm run dev:server\" \"npm run dev:client\"",
+    "build:server": "npm --prefix server run build",
+    "build:client": "npm --prefix client run build",
+    "build": "npm run build:server && npm run build:client",
+    "test:server": "npm --prefix server test",
+    "test": "npm run test:server",
+    "install:all": "npm install && npm --prefix server install && npm --prefix client install"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
