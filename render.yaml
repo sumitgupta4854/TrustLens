@@ -57,26 +57,11 @@ services:
         value: console
 
 # ===================================================
-# Frontend Static Site (React + Vite)
-# ===================================================
-  - type: static
-    name: trustlens-frontend
-    buildCommand: npm --prefix client run build
-    publish: client/dist
-    route:
-      - type: rewrite
-        source: /api/*
-        destination: https://trustlens-backend.onrender.com/api/*
-    envVars:
-      - key: VITE_API_BASE_URL
-        # Backend API URL for Vite to use in production
-        value: https://trustlens-backend.onrender.com
-
-# ===================================================
 # Notes:
 # 1. After first deploy, update APP_BASE_URL and API_BASE_URL
 #    with the actual URLs Render assigns to your services
 # 2. Set MONGODB_URI, JWT_ACCESS_SECRET, JWT_REFRESH_SECRET
 #    in the Render dashboard (never commit real secrets)
 # 3. MongoDB Atlas is NOT included - you need to create it separately
+# 4. Frontend (static site) will be deployed separately from Render dashboard
 # ===================================================
