@@ -9,7 +9,7 @@ import {
   UserMessagesAnalysisResponse,
 } from '../types';
 
-const BASE_URL = '/api';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 // We store the access token in memory (never in localStorage for security)
 let accessToken: string | null = null;
